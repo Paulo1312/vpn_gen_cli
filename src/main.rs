@@ -37,6 +37,10 @@ struct Cli {
     amnezia_fixer: bool,
     #[arg(short, long)]
     wireguard: bool,
+    #[arg(short='g', long)]
+    vpn_gen_config: bool,
+    #[arg(short='l', long)]
+    vless: bool,
     #[arg(long)]
     all: bool,
     /// Usage example: vpngen_lib --socks5 127.0.0.1:9052
@@ -56,7 +60,9 @@ struct TemplateText{
     shadowsocks: String,
     amnezia: String,
     amnezia_fixer: String,
-    wireguard: String
+    wireguard: String,
+    vless: String,
+    vpngen: String
 }
 
 #[tokio::main]
@@ -73,7 +79,9 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
             shadowsocks: "ShadowSocks: [!shadowsocks]".to_string(),
             amnezia: "Amnezia: [!amnezia_path]".to_string(),
             amnezia_fixer: "Fixed amnezia file: [!amnezia_path]".to_string(),
-            wireguard: "Wireguard: [!wireguard_path]".to_string()
+            wireguard: "Wireguard: [!wireguard_path]".to_string(),
+            vless: "Vless: [!vless]".to_string(),
+            vpngen: "VpnGen: [!vpngen]".to_string()
         }
     };
 
@@ -118,6 +126,24 @@ pub async fn main() -> Result<(), Box<dyn std::error::Error>> {
         printable_text.push('\n');
         printable_text.push_str(template_text.wireguard.replace("[!wireguard_path]", &config.wireguard_config.file_name).as_str());
         save_to_file(&format!("{}/{}", config_dir, config.wireguard_config.file_name), &config.wireguard_config.file_content)?;
+    }
+    if cli.vpn_gen_config || cli.all {
+        printable_text.push_str(
+            format!(
+                "\n\n{}",
+                template_text.vpngen.replace("[!vpngen]", &config.v_p_n_gen_config)
+            ).as_str()
+        );
+
+    }
+    if cli.vless || cli.all {
+        printable_text.push_str(
+            format!(
+                "\n\n{}",
+                template_text.vless.replace("[!vless]", &config.proto0_config.access_key)
+            ).as_str()
+        );
+
     }
     println!("{}", printable_text);
     Ok(())

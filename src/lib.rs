@@ -14,7 +14,15 @@ pub struct ConfigJson{
     pub amnz_ovc_config: AmneziaConfig,
     pub outline_config: OutlineConfig,
     pub user_name: String,
-    pub wireguard_config: WireguardConfig
+    pub wireguard_config: WireguardConfig,
+    pub v_p_n_gen_config: String,
+    pub proto0_config: Proto0
+}
+
+#[derive(Deserialize, Serialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct Proto0 {
+    pub access_key: String
 }
 
 #[derive(Deserialize, Serialize)]
